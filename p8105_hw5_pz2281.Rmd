@@ -67,5 +67,51 @@ bal_test_result
 ```
 The estimated proportion of unsolved homicides in Baltimore is `r bal_test_result$estimate`. The 95% confidence interval is `r bal_test_result$conf.low` to `r bal_test_result$conf.high`.
 
+prop.test for every city:
+
+First, write a function to make the above steps generalized to every dataframe with same variable/format
+```{r}
+city_test = function(df) {
+  df_test = df %>% 
+    summarise(
+    unsolved = sum(status == "unsolved"),
+    num_case = n()
+  ) 
+
+city_test_result = prop.test(x = df_test %>% pull(unsolved), n = df_test %>% pull(num_case)) %>% 
+  broom::tidy() %>% 
+  select(estimate, conf.low, conf.high)
+
+return(city_test_result)
+}
+```
+
+Calling the function by mapping for the nested df and unnest it for better illustration of the results.
+```{r}
+homicides_nest_result = 
+  homicides_data %>% 
+  nest(data = uid:status) %>% 
+  mutate(test_result = map(data, city_test)) %>% 
+  unnest(test_result) %>% 
+  select(-data)
+
+homicides_nest_result %>% 
+  knitr::kable()
+```
+
+Plot the confidence interval and estimated proportion:
+```{r}
+homicides_nest_result %>% 
+  mutate(city_state = forcats::fct_reorder(city_state, estimate)) %>%
+  ggplot() +
+  geom_errorbar(mapping = aes(x = city_state, ymin = conf.low, ymax = conf.high)) +
+  geom_point(mapping = aes(x = city_state, y = estimate)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(
+    title = "95% Confidence interval and Estimated Proportion \n of Unsolved Homicides Cases in Each City",
+    x = "City",
+    y = "Proportion"
+       )
+```
 
 
