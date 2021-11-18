@@ -13,7 +13,7 @@ library(ggplot2)
 
 Import and clean the data
 ```{r}
-homicides_data = read_csv(file = "./data-homicides-master/homicide-data.csv", na = c("", "Unknown"))
+homicides_data = read_csv(file = "./data/homicide-data.csv", na = c("", "Unknown"))
 head(homicides_data) 
 ```
 The raw data contained homicides cases from 50 large U.S. cities. Variables include unique case id of each city from an ascending order, reported date of the case, victim's name, race, age, sex, where the case happened specified in geographical coordinates and name of hte city/state, and case disposition. There are `r nrow(homicides_data)` observations and `r ncol(homicides_data)` variables. Missing values exist in victim_race, victim_age, victim_race, and geographical coordindates. Missing values were changed to N/A. We see that there is one possible data entry error which city Tulsa should be in state Oklahoma instead of Alabama. To make consistency for later analysis, omit this one oberservation.
@@ -112,6 +112,18 @@ homicides_nest_result %>%
     x = "City",
     y = "Proportion"
        )
+```
+
+## Problem 2
+```{r}
+path = "./data2"
+data_names = list.files(path, pattern = ".csv")
+
+df = tibble(
+  id = data_names
+) %>% 
+  mutate(vars = map(id, ~ read_csv(file.path(path, .)))) %>% 
+  unnest(vars)
 ```
 
 
