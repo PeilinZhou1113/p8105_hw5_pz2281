@@ -9,8 +9,41 @@ library(tidyverse)
 library(ggplot2)
 ```
 
+## Problem 1
+
+Import and clean the data
 ```{r}
-homicides_data = read_csv(file = "./data-homicides-master/homicide-data.csv")
-head(homicides_data)
+homicides_data = read_csv(file = "./data-homicides-master/homicide-data.csv", na = c("", "Unknown"))
+head(homicides_data) 
 ```
-The raw data contained homicides cases from 50 large U.S. cities. Variables include unique case id of each city from an ascending order, reported date of the case, victim's name, race, age, sex, where the case happened specified in geographical coordinates and name of hte city/state, and case disposition. There are `r nrow(homicides_data)` observations and `r ncol(homicides_data)` variables. Missing values exist in victim_race, victim_age, victim_race, and geographical coordindates.
+The raw data contained homicides cases from 50 large U.S. cities. Variables include unique case id of each city from an ascending order, reported date of the case, victim's name, race, age, sex, where the case happened specified in geographical coordinates and name of hte city/state, and case disposition. There are `r nrow(homicides_data)` observations and `r ncol(homicides_data)` variables. Missing values exist in victim_race, victim_age, victim_race, and geographical coordindates. Missing values were changed to N/A. We see that there is one possible data entry error which city Tulsa should be in state Oklahoma instead of Alabama. To make consistency for later analysis, omit this one oberservation.
+
+add new variables to the data frame and do summarization with conditions
+```{r}
+homicides_data = homicides_data %>% 
+  mutate(
+    city_state = str_c(city,state, sep = ",")
+  ) %>% 
+  filter(city_state != "TulsaAL") %>% 
+  relocate(city_state)
+
+#total number of homicides within cities
+homicides_data %>% 
+  group_by(city_state) %>% 
+  summarise(
+    n = n()
+  )
+```
+Total number of homicide cases within each city as a table.
+
+```{r}
+#total number of unsolved homicides
+homicides_data %>% 
+  mutate(status = ifelse(disposition == "Closed by arrest", "solved", "unsolved")) %>% 
+  filter(status == "unsolved") %>% 
+  group_by(city_state) %>% 
+  summarise(unsolved_case = n())
+```
+Total number of unsolved homicide cases within each city as a table.
+
+
