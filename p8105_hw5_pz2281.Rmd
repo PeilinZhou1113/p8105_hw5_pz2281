@@ -4,3 +4,13 @@ author: "Peilin Zhou"
 output: github_document
 ---
 
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+homicides_data = read_csv(file = "./data-homicides-master/homicide-data.csv")
+head(homicides_data)
+```
+The raw data contained homicides cases from 50 large U.S. cities. Variables include unique case id of each city from an ascending order, reported date of the case, victim's name, race, age, sex, where the case happened specified in geographical coordinates and name of hte city/state, and case disposition. There are `r nrow(homicides_data)` observations and `r ncol(homicides_data)` variables. Missing values exist in victim_race, victim_age, victim_race, and geographical coordindates.
