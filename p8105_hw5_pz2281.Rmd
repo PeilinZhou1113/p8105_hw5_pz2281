@@ -38,13 +38,34 @@ Total number of homicide cases within each city as a table.
 
 ```{r}
 #total number of unsolved homicides
-homicides_data %>% 
-  mutate(status = ifelse(disposition == "Closed by arrest", "solved", "unsolved")) %>% 
+homicides_data  = homicides_data %>% 
+  mutate(status = ifelse(disposition == "Closed by arrest", "solved", "unsolved")) 
+
+unsolved_table = homicides_data %>% 
   filter(status == "unsolved") %>% 
   group_by(city_state) %>% 
   summarise(unsolved_case = n()) %>% 
   knitr::kable()
+unsolved_table
 ```
 Total number of unsolved homicide cases within each city as a table.
+
+Conduct prop.test for Baltimore,MD
+```{r}
+bal_unsolved_data = homicides_data %>% 
+  filter(city_state == "Baltimore,MD") %>% 
+  summarise(
+    unsolved = sum(status == "unsolved"),
+    num_case = n()
+  ) 
+
+bal_test_result = 
+  prop.test(x = bal_unsolved_data %>% pull(unsolved), n = bal_unsolved_data %>% pull(num_case)) %>% 
+  broom::tidy() %>% 
+  select(estimate, conf.low, conf.high)
+bal_test_result
+```
+The estimated proportion of unsolved homicides in Baltimore is `r bal_test_result$estimate`. The 95% confidence interval is `r bal_test_result$conf.low` to `r bal_test_result$conf.high`.
+
 
 
