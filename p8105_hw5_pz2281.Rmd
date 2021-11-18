@@ -24,7 +24,7 @@ homicides_data = homicides_data %>%
   mutate(
     city_state = str_c(city,state, sep = ",")
   ) %>% 
-  filter(city_state != "TulsaAL") %>% 
+  filter(city_state != "Tulsa,AL") %>% 
   relocate(city_state)
 
 #total number of homicides within cities
@@ -32,7 +32,7 @@ homicides_data %>%
   group_by(city_state) %>% 
   summarise(
     n = n()
-  )
+  ) %>% knitr::kable()
 ```
 Total number of homicide cases within each city as a table.
 
@@ -42,7 +42,8 @@ homicides_data %>%
   mutate(status = ifelse(disposition == "Closed by arrest", "solved", "unsolved")) %>% 
   filter(status == "unsolved") %>% 
   group_by(city_state) %>% 
-  summarise(unsolved_case = n())
+  summarise(unsolved_case = n()) %>% 
+  knitr::kable()
 ```
 Total number of unsolved homicide cases within each city as a table.
 
