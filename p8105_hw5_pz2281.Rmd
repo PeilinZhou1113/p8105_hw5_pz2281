@@ -138,8 +138,12 @@ study_df = tibble(
   mutate(arm_id = id) %>% 
   separate(id, c("arm", "id"), sep = "_") %>% 
   mutate(arm = recode(arm, con = "control", exp = "experimental"))
+study_df
+```
 
+dataframe was cleaned.
 
+```{r, message = FALSE}
 spaghetti_plot = study_df %>% 
   ggplot(aes(x = week, y = observed_value, group = arm_id, color = arm)) +
   geom_line(alpha = 0.5) +
