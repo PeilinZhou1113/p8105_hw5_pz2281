@@ -122,7 +122,7 @@ data_names = list.files(path, pattern = ".csv")
 ```
 
 
-```{r}
+```{r, message = FALSE}
 study_df = tibble(
   id = data_names
 ) %>% 
@@ -137,7 +137,7 @@ study_df = tibble(
   mutate(id = gsub(".csv", "", id)) %>% 
   mutate(arm_id = id) %>% 
   separate(id, c("arm", "id"), sep = "_") %>% 
-  mutate(arm = recode(arm, con = "control", exp = "experiment"))
+  mutate(arm = recode(arm, con = "control", exp = "experimental"))
 
 
 spaghetti_plot = study_df %>% 
@@ -150,6 +150,8 @@ spaghetti_plot = study_df %>%
   )
 spaghetti_plot
 ```
+
+From the plot, we can see that from week 1 to week 8, there was an noticeable trend of general increase of the observed value in the experimental group. The change of the value is from around 0-3.75 to 3.75-7. However, there is no significant trend of increase or decrease for the observed value in the control group as weeks passed. Observed values maintained around 0 to 2.5 from week 1 to week 8.
 
 ## Problem 3
 
@@ -184,6 +186,8 @@ iris_no_NA
 iris_no_NA %>%
   summarise_all(~ sum(is.na(.)))
 ```
+
+
 
 
 
