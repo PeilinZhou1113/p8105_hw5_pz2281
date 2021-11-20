@@ -191,6 +191,7 @@ iris_no_NA %>%
   summarise_all(~ sum(is.na(.)))
 ```
 
+Numerical missing values are replaced with mean of non-missing values for each variable. Missing values in character variables are replaced with 'verginica'.
 
 
 
