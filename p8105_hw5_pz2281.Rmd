@@ -4,7 +4,7 @@ author: "Peilin Zhou"
 output: github_document
 ---
 
-```{r}
+```{r, message = FALSE}
 library(tidyverse)
 library(ggplot2)
 ```
@@ -12,7 +12,7 @@ library(ggplot2)
 ## Problem 1
 
 Import and clean the data
-```{r}
+```{r, message = FALSE}
 homicides_data = read_csv(file = "./data/homicide-data.csv", na = c("", "Unknown"))
 head(homicides_data) 
 ```
